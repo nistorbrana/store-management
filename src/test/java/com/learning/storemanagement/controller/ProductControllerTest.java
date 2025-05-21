@@ -1,6 +1,7 @@
 package com.learning.storemanagement.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.learning.storemanagement.dto.ChangePriceRequest;
 import com.learning.storemanagement.dto.ProductDTO;
 import com.learning.storemanagement.exception.ResourceNotFoundException;
 import com.learning.storemanagement.service.ProductService;
@@ -14,9 +15,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,9 +32,12 @@ public class ProductControllerTest {
     private static final String PRODUCT_NAME_2 = "Product 2 Name";
     private static final Double PRODUCT_PRICE_2 = 22.0;
     private static final Integer PRODUCT_STOCK_2 = 3;
+    private static final Double NEW_PRICE = 20.0;
+    private static final Double NEGATIVE_NEW_PRICE = -20.0;
     private static final String INVALID_PRODUCT_NAME = "Product name cannot be empty";
     private static final String INVALID_PRODUCT_PRICE = "Product price must be greater than 0";
     private static final String INVALID_PRODUCT_STOCK = "Product stock cannot be negative";
+    private static final String INVALID_NEW_PRICE = "New price must be greater than 0";
 
     @Autowired
     private MockMvc mockMvc;
@@ -102,6 +107,34 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.stock", containsString(INVALID_PRODUCT_STOCK)));
     }
 
+    @Test
+    public void updateProductPrice_success() throws Exception {
+        ChangePriceRequest priceRequest = givenChangePriceRequest(NEW_PRICE);
+        String json = objectMapper.writeValueAsString(priceRequest);
+        when(productService.updatePrice(eq(1L),any())).thenReturn(givenProductDTO(1L, PRODUCT_NAME, NEW_PRICE, PRODUCT_STOCK));
+
+        mockMvc.perform(patch(ENDPOINT + "/" + 1L + "/price")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(PRODUCT_NAME))
+                .andExpect(jsonPath("$.price").value(NEW_PRICE))
+                .andExpect(jsonPath("$.stock").value(PRODUCT_STOCK))
+                .andExpect(jsonPath("$.id").value(1L));
+    }
+
+    @Test
+    public void updateProductPrice_priceNotValid() throws Exception {
+        String json = objectMapper.writeValueAsString(givenChangePriceRequest(NEGATIVE_NEW_PRICE));
+
+        mockMvc.perform(patch(ENDPOINT + "/" + 1L + "/price")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.newPrice", containsString(INVALID_NEW_PRICE)));
+    }
+
     private ProductDTO givenProductDTO(Long id, String name, Double price, Integer stock) {
         return new ProductDTO(id, name, price, stock);
     }
@@ -111,5 +144,9 @@ public class ProductControllerTest {
                 givenProductDTO(1L, PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_STOCK),
                 givenProductDTO(2L, PRODUCT_NAME_2, PRODUCT_PRICE_2, PRODUCT_STOCK_2)
         );
+    }
+
+    private ChangePriceRequest givenChangePriceRequest(Double newPrice) {
+        return new ChangePriceRequest(newPrice);
     }
 }
