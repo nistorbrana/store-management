@@ -1,5 +1,6 @@
 package com.learning.storemanagement.service;
 
+import com.learning.storemanagement.dto.ChangePriceRequest;
 import com.learning.storemanagement.dto.ProductDTO;
 import com.learning.storemanagement.dto.builder.ProductBuilder;
 import com.learning.storemanagement.exception.ResourceNotFoundException;
@@ -29,6 +30,7 @@ public class ProductServiceTest {
     private static final String PRODUCT_NAME_2 = "Product 2 Name";
     private static final Double PRODUCT_PRICE_2 = 22.0;
     private static final Integer PRODUCT_STOCK_2 = 3;
+    private static final Double NEW_PRICE = 50.0;
 
     @Mock
     private ProductRepository productRepository;
@@ -106,6 +108,31 @@ public class ProductServiceTest {
         assertEquals(1L, result.getId());
     }
 
+    @Test
+    public void updatePrice_success() {
+        Product product = givenProduct(1L, PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_STOCK);
+        Product updatedProduct = givenProduct(1L, PRODUCT_NAME, NEW_PRICE, PRODUCT_STOCK);
+        ProductDTO productDTO = givenProductDTO(1L, PRODUCT_NAME, NEW_PRICE, PRODUCT_STOCK);
+
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        when(productRepository.save(product)).thenReturn(updatedProduct);
+        whenToDTOIsCalled(updatedProduct, productDTO);
+
+        ProductDTO result = productService.updatePrice(1L,givenChangePriceRequest());
+
+        assertEquals(NEW_PRICE, result.getPrice());
+        assertEquals(PRODUCT_STOCK, result.getStock());
+        assertEquals(PRODUCT_NAME, result.getName());
+        assertEquals(1L, result.getId());
+    }
+
+    @Test
+    public void updatePrice_productNotFound() {
+        when(productRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> productService.updatePrice(1L,any()));
+    }
+
     private List<Product> givenProducts() {
         return List.of(
                 givenProduct(1L, PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_STOCK),
@@ -126,6 +153,10 @@ public class ProductServiceTest {
 
     private ProductDTO givenProductDTO(Long id, String name, Double price, Integer stock) {
         return new ProductDTO(id, name, price, stock);
+    }
+
+    private ChangePriceRequest givenChangePriceRequest() {
+        return new ChangePriceRequest(50.0);
     }
 
     private void whenToDTOIsCalled(Product product, ProductDTO productDTO) {
