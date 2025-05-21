@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
-class ProductControllerTest {
+public class ProductControllerTest {
 
     private static final String ENDPOINT = "/products";
     private static final String PRODUCT_NAME = "Product Name";
