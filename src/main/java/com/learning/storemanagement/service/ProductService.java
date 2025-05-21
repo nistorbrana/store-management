@@ -16,25 +16,26 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private ProductRepository productRepository;
+    private ProductBuilder productBuilder;
 
     public List<ProductDTO> getAllProducts() {
         List<Product> products = productRepository.findAll();
 
         return products.stream()
-                .map(ProductBuilder::toDTO)
+                .map(productBuilder::toDTO)
                 .collect(Collectors.toList());
     }
 
     public ProductDTO addProduct(ProductDTO productDTO) {
-        Product product = ProductBuilder.toEntity(productDTO);
-        return ProductBuilder.toDTO(productRepository.save(product));
+        Product product = productBuilder.toEntity(productDTO);
+        return productBuilder.toDTO(productRepository.save(product));
     }
 
     public ProductDTO getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
 
-        return ProductBuilder.toDTO(product);
+        return productBuilder.toDTO(product);
 
     }
 }

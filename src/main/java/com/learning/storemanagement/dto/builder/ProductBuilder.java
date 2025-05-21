@@ -2,10 +2,12 @@ package com.learning.storemanagement.dto.builder;
 
 import com.learning.storemanagement.dto.ProductDTO;
 import com.learning.storemanagement.model.Product;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProductBuilder {
 
-    public static Product toEntity(ProductDTO productDTO) {
+    public Product toEntity(ProductDTO productDTO) {
         return Product.builder()
                 .id(productDTO.getId())
                 .name(productDTO.getName())
@@ -14,7 +16,7 @@ public class ProductBuilder {
                 .build();
     }
 
-    public static ProductDTO toDTO(Product product) {
+    public ProductDTO toDTO(Product product) {
         return ProductDTO.builder()
                 .id(product.getId())
                 .name(product.getName())
