@@ -1,6 +1,7 @@
 package com.learning.storemanagement.service;
 
 import com.learning.storemanagement.dto.ProductDTO;
+import com.learning.storemanagement.dto.ChangePriceRequest;
 import com.learning.storemanagement.dto.builder.ProductBuilder;
 import com.learning.storemanagement.exception.ResourceNotFoundException;
 import com.learning.storemanagement.model.Product;
@@ -37,5 +38,14 @@ public class ProductService {
 
         return productBuilder.toDTO(product);
 
+    }
+
+    public ProductDTO updatePrice(Long productId, ChangePriceRequest newPriceDTO) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + productId + " not found"));
+
+        product.setPrice(newPriceDTO.getNewPrice());
+
+        return productBuilder.toDTO(productRepository.save(product));
     }
 }

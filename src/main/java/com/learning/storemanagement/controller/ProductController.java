@@ -1,6 +1,7 @@
 package com.learning.storemanagement.controller;
 
 import com.learning.storemanagement.dto.ProductDTO;
+import com.learning.storemanagement.dto.ChangePriceRequest;
 import com.learning.storemanagement.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -33,4 +34,11 @@ public class ProductController {
         ProductDTO productDTO = productService.getProductById(productId);
         return new ResponseEntity<>(productDTO, HttpStatus.OK);
     }
+
+    @PatchMapping({"{productId}/price"})
+    public ResponseEntity<ProductDTO> updateProductPrice(@PathVariable Long productId, @Valid @RequestBody ChangePriceRequest newPriceDTO) {
+        ProductDTO productDTO = productService.updatePrice(productId, newPriceDTO);
+        return new ResponseEntity<>(productDTO, HttpStatus.OK);
+    }
+
 }
