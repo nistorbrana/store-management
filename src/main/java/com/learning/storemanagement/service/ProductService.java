@@ -2,6 +2,7 @@ package com.learning.storemanagement.service;
 
 import com.learning.storemanagement.dto.ProductDTO;
 import com.learning.storemanagement.dto.builder.ProductBuilder;
+import com.learning.storemanagement.exception.ResourceNotFoundException;
 import com.learning.storemanagement.model.Product;
 import com.learning.storemanagement.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -27,5 +28,13 @@ public class ProductService {
     public ProductDTO addProduct(ProductDTO productDTO) {
         Product product = ProductBuilder.toEntity(productDTO);
         return ProductBuilder.toDTO(productRepository.save(product));
+    }
+
+    public ProductDTO getProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
+
+        return ProductBuilder.toDTO(product);
+
     }
 }
