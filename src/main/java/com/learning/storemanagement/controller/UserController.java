@@ -1,7 +1,7 @@
 package com.learning.storemanagement.controller;
 
-import com.learning.storemanagement.dto.StoreUserDTO;
-import com.learning.storemanagement.service.StoreUserService;
+import com.learning.storemanagement.dto.UserDTO;
+import com.learning.storemanagement.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,17 +12,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
-public class StoreUsersController {
+public class UserController {
 
-    private StoreUserService storeUserService;
+    private UserService storeUserService;
 
     @GetMapping
-    public ResponseEntity<List<StoreUserDTO>> getAllUsers() {
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
         return new ResponseEntity<>(storeUserService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<StoreUserDTO> createUser(@RequestBody StoreUserDTO storeUserDTO) {
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO storeUserDTO) {
         return new ResponseEntity<>(storeUserService.save(storeUserDTO), HttpStatus.CREATED);
     }
 }

@@ -1,7 +1,7 @@
 package com.learning.storemanagement.service;
 
-import com.learning.storemanagement.dto.StoreUserDTO;
-import com.learning.storemanagement.dto.builder.StoreUserBuilder;
+import com.learning.storemanagement.dto.UserDTO;
+import com.learning.storemanagement.dto.builder.UserBuilder;
 import com.learning.storemanagement.model.StoreUser;
 import com.learning.storemanagement.repository.StoreUserRepository;
 import lombok.AllArgsConstructor;
@@ -12,19 +12,19 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class StoreUserService {
+public class UserService {
 
     private StoreUserRepository storeUserRepository;
-    private StoreUserBuilder storeUserBuilder;
+    private UserBuilder storeUserBuilder;
 
-    public List<StoreUserDTO> findAll() {
+    public List<UserDTO> findAll() {
         List<StoreUser> users = storeUserRepository.findAll();
         return users.stream()
                 .map(storeUserBuilder::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public StoreUserDTO save(StoreUserDTO storeUserDTO) {
+    public UserDTO save(UserDTO storeUserDTO) {
         StoreUser storeUser = storeUserBuilder.toEntity(storeUserDTO);
         return storeUserBuilder.toDTO(storeUserRepository.save(storeUser));
     }

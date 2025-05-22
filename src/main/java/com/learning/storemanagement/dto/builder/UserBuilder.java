@@ -1,13 +1,13 @@
 package com.learning.storemanagement.dto.builder;
 
-import com.learning.storemanagement.dto.StoreUserDTO;
+import com.learning.storemanagement.dto.UserDTO;
 import com.learning.storemanagement.model.StoreUser;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StoreUserBuilder {
+public class UserBuilder {
 
-    public StoreUser toEntity(StoreUserDTO dto) {
+    public StoreUser toEntity(UserDTO dto) {
         return StoreUser.builder()
                 .id(dto.getId())
                 .password(dto.getPassword())
@@ -15,8 +15,8 @@ public class StoreUserBuilder {
                 .build();
     }
 
-    public StoreUserDTO toDTO(StoreUser entity) {
-        return StoreUserDTO.builder()
+    public UserDTO toDTO(StoreUser entity) {
+        return UserDTO.builder()
                 .id(entity.getId())
                 .password(entity.getPassword())
                 .username(entity.getUsername())
