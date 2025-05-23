@@ -14,15 +14,15 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController {
 
-    private UserService storeUserService;
+    private UserService userService;
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
-        return new ResponseEntity<>(storeUserService.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO storeUserDTO) {
-        return new ResponseEntity<>(storeUserService.save(storeUserDTO), HttpStatus.CREATED);
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+        return new ResponseEntity<>(userService.save(userDTO), HttpStatus.CREATED);
     }
 }

@@ -12,6 +12,7 @@ public class UserBuilder {
                 .id(dto.getId())
                 .password(dto.getPassword())
                 .username(dto.getUsername())
+                .role(dto.getRole())
                 .build();
     }
 
@@ -20,6 +21,7 @@ public class UserBuilder {
                 .id(entity.getId())
                 .password(entity.getPassword())
                 .username(entity.getUsername())
+                .role(entity.getRole())
                 .build();
     }
 }
