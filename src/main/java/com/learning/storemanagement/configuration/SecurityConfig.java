@@ -30,8 +30,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(HttpMethod.POST, USERS_ENDPOINT).permitAll()
-                        .requestMatchers(HttpMethod.GET, USERS_ENDPOINT).permitAll()
+                        .requestMatchers(HttpMethod.POST, USERS_ENDPOINT).hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET, USERS_ENDPOINT).hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET, PRODUCTS_ENDPOINT).hasAnyRole(Role.ADMIN.name(), Role.REGULAR.name())
                         .requestMatchers(HttpMethod.POST, PRODUCTS_ENDPOINT).hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.PATCH, PRODUCTS_ENDPOINT). hasRole(Role.ADMIN.name())
@@ -44,11 +44,6 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return userDetailsService;
     }
 
     @Bean
