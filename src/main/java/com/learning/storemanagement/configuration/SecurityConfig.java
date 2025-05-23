@@ -19,8 +19,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @AllArgsConstructor
 public class SecurityConfig {
 
-    private static final String USERS_ENDPOINT = "/users";
-    private static final String PRODUCTS_ENDPOINT = "/products";
+    private static final String USERS_ENDPOINT = "/users/**";
+    private static final String PRODUCTS_ENDPOINT = "/products/**";
 
     private final CustomUserDetailsService userDetailsService;
 
