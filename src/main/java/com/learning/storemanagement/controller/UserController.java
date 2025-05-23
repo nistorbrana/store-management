@@ -2,6 +2,7 @@ package com.learning.storemanagement.controller;
 
 import com.learning.storemanagement.dto.UserDTO;
 import com.learning.storemanagement.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
         return new ResponseEntity<>(userService.save(userDTO), HttpStatus.CREATED);
     }
 }

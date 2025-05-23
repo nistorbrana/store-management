@@ -2,6 +2,7 @@ package com.learning.storemanagement.service;
 
 import com.learning.storemanagement.dto.UserDTO;
 import com.learning.storemanagement.dto.builder.UserBuilder;
+import com.learning.storemanagement.exception.UsernameAlreadyExistsException;
 import com.learning.storemanagement.model.StoreUser;
 import com.learning.storemanagement.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,10 @@ public class UserService {
     }
 
     public UserDTO save(UserDTO userDTO) {
+        String username = userDTO.getUsername();
+        if(userRepository.findByUsername(username).isPresent()) {
+            throw new UsernameAlreadyExistsException("Username " + username + " already exists");
+        }
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
 
         StoreUser user = userBuilder.toEntity(userDTO);
