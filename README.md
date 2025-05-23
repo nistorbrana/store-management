@@ -14,6 +14,8 @@ The application also allows simple functionalities on users, like getting and ad
 - JUnit 5 and Mockito (for testing)
 - SLF4J (for logging)
 
+---
+
 ## 📦 Features
 - Add product
 - Get all products
@@ -25,7 +27,7 @@ The application also allows simple functionalities on users, like getting and ad
 - Basic authentication based on roles
 - Exception handling
 - Logging
-
+---
 
 ## 📑 Endpoints
 
@@ -39,6 +41,74 @@ The application also allows simple functionalities on users, like getting and ad
 | POST   | `/users`               | Add a new user       | ADMIN          |
 
 > Data are transferred via `DTOs` and validated using annotations.
+
+### 🛡️ Field Validations
+
+#### 📦 Product Validations
+| Field   | Validation                       |
+|---------|----------------------------------|
+| `name`  | must not be blank                |
+| `price` | must not be null and must be > 0 |
+| `stock` | must not be null and must be ≥ 0 |
+
+
+#### 🙍🏻‍♂️ User Validations
+
+| Field      | Validation                              |
+|------------|-----------------------------------------|
+| `username` | must not be blank and must be unique    |
+| `password` | must not be blank                       |
+| `role`     | must not be null (`ADMIN` or `REGULAR`) |
+
+---
+### 📬 Example Requests
+#### ✅ Add Product (valid)
+
+**Request:**
+```http
+POST /products
+Content-Type: application/json
+```
+```json
+{
+  "name": "Phone",
+  "price": 59.99,
+  "stock": 5
+}
+```
+
+**Response:**
+```json
+{
+  "id": 1,
+  "name": "Phone",
+  "price": 59.99,
+  "stock": 5
+}
+```
+
+#### ❌ Add Product (invalid)
+**Request:**
+```http
+POST /products
+Content-Type: application/json
+```
+```json
+{
+  "name" : "",
+  "price" :  -20,
+  "stock" : -2
+}
+```
+**Response:**
+```json
+{
+  "price": "Product price must be greater than 0",
+  "name": "Product name cannot be empty",
+  "stock": "Product stock cannot be negative"
+}
+```
+
 
 ## 🔐 Security
 This application uses Basic Authentication along with role-based access control
