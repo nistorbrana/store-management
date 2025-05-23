@@ -28,18 +28,46 @@ The application also allows simple functionalities on users, like getting and ad
 
 ## 📑 Endpoints
 
-| Method | Endpoint               | Description          |
-|--------|------------------------|----------------------|
-| GET    | `/products`            | Get all products     |
-| GET    | `/products/{id}`       | Get product by ID    |
-| POST   | `/products`            | Add a new product    |
-| PATCH  | `/products/{id}/price` | Update product price |
-| GET    | `/users`               | Get all users        |
-| POST   | `/users`               | Add a new user       |
+| Method | Endpoint               | Description          | Access         |
+|--------|------------------------|----------------------|----------------|
+| GET    | `/products`            | Get all products     | ADMIN, REGULAR |
+| GET    | `/products/{id}`       | Get product by ID    | ADMIN, REGULAR |
+| POST   | `/products`            | Add a new product    | ADMIN          |
+| PATCH  | `/products/{id}/price` | Update product price | ADMIN          |
+| GET    | `/users`               | Get all users        | ADMIN          |
+| POST   | `/users`               | Add a new user       | ADMIN          |
 
 > Data are transferred via `DTOs` and validated using annotations.
 
-## 🛠 Installations steps
+## 🔐 Security
+This application uses Basic Authentication along with role-based access control
+
+### 🔑 Authentication
+
+All protected endpoints require HTTP Basic authentication using a valid username and password.
+
+- Passwords are encrypted using `BCrypt`
+- A custom `UserDetailsService` is used to load users from the database
+- Roles are used to control access (`ADMIN`, `REGULAR`)
+
+### 👤 Default Admin User
+A default `admin` user is inserted when application starts for testing purposes.
+
+
+| Username | Password   | Role  |
+|----------|------------|-------|
+| admin    | admin123   | ADMIN |
+
+### 📝 Example request
+
+You can test secured endpoints using Basic Auth.
+
+**curl:**
+```bash
+  curl -u admin:admin123 http://localhost:8080/products
+```
+
+## 🛠 Installation steps
 
 #### 1. Clone the Repository
 ```bash
