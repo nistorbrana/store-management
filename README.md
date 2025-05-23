@@ -1,6 +1,6 @@
 # 🛒 Store Management API
-This is a Java Spring Boot application that provides a simple store-management API
-The application allows managing products with features like adding products, getting products and changing product price
+This is a Java Spring Boot application that provides a simple store-management API.  
+The application allows managing products with features like adding products, getting products and changing product price.  
 The application also allows simple functionalities on users, like getting and adding users.
 
 ---
@@ -9,6 +9,7 @@ The application also allows simple functionalities on users, like getting and ad
 - Java 17
 - Spring Boot
 - Spring Data JPA
+- Spring Security
 - Lombok
 - Maven
 - JUnit 5 and Mockito (for testing)
