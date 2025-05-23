@@ -1,14 +1,18 @@
 package com.learning.storemanagement.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.learning.storemanagement.configuration.SecurityConfig;
 import com.learning.storemanagement.dto.ChangePriceRequest;
 import com.learning.storemanagement.dto.ProductDTO;
 import com.learning.storemanagement.exception.ResourceNotFoundException;
+import com.learning.storemanagement.security.CustomUserDetailsService;
 import com.learning.storemanagement.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -23,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
+@Import(SecurityConfig.class)
 public class ProductControllerTest {
 
     private static final String ENDPOINT = "/products";
@@ -38,6 +43,8 @@ public class ProductControllerTest {
     private static final String INVALID_PRODUCT_PRICE = "Product price must be greater than 0";
     private static final String INVALID_PRODUCT_STOCK = "Product stock cannot be negative";
     private static final String INVALID_NEW_PRICE = "New price must be greater than 0";
+    private static final String ADMIN = "ADMIN";
+    private static final String REGULAR = "REGULAR";
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,8 +52,11 @@ public class ProductControllerTest {
     private ObjectMapper objectMapper;
     @MockitoBean
     private ProductService productService;
+    @MockitoBean
+    private CustomUserDetailsService userDetailsService;
 
     @Test
+    @WithMockUser(roles=REGULAR)
     public void getAllProducts() throws Exception {
         when(productService.getAllProducts()).thenReturn(givenProductsDTO());
 
@@ -62,6 +72,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(roles=ADMIN)
     public void getProductById_success() throws Exception {
         when(productService.getProductById(1L)).thenReturn(givenProductDTO(1L, PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_STOCK));
 
@@ -74,6 +85,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(roles=REGULAR)
     public void getProductById_notFound() throws Exception {
         when(productService.getProductById(1L)).thenThrow(new ResourceNotFoundException("Product with id 1 not found"));
 
@@ -84,6 +96,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(roles=ADMIN)
     public void addProduct_success() throws Exception {
         String json = objectMapper.writeValueAsString(givenProductDTO(null, PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_STOCK));
 
@@ -94,6 +107,18 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(roles=REGULAR)
+    public void addProduct_unauthorizedUser() throws Exception {
+        String json = objectMapper.writeValueAsString(givenProductDTO(null, PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_STOCK));
+
+        mockMvc.perform(post(ENDPOINT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles=ADMIN)
     public void addProduct_fieldsNotValid() throws Exception {
         String json = objectMapper.writeValueAsString(givenProductDTO(null, "", -2D, -1));
 
@@ -108,6 +133,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(roles=ADMIN)
     public void updateProductPrice_success() throws Exception {
         ChangePriceRequest priceRequest = givenChangePriceRequest(NEW_PRICE);
         String json = objectMapper.writeValueAsString(priceRequest);
@@ -124,6 +150,7 @@ public class ProductControllerTest {
     }
 
     @Test
+    @WithMockUser(roles=ADMIN)
     public void updateProductPrice_priceNotValid() throws Exception {
         String json = objectMapper.writeValueAsString(givenChangePriceRequest(NEGATIVE_NEW_PRICE));
 
