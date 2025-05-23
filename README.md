@@ -22,6 +22,7 @@ The application also allows simple functionalities on users, like getting and ad
 - Add user
 - Get all users
 - Field validations on product
+- Basic authentication based on roles
 - Exception handling
 - Logging
 
@@ -62,7 +63,6 @@ A default `admin` user is inserted when application starts for testing purposes.
 
 You can test secured endpoints using Basic Auth.
 
-**curl:**
 ```bash
   curl -u admin:admin123 http://localhost:8080/products
 ```
