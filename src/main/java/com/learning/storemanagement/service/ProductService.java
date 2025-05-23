@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.learning.storemanagement.utils.ProductEvent.*;
+import static com.learning.storemanagement.utils.events.ProductEvent.*;
 
 @Service
 @AllArgsConstructor

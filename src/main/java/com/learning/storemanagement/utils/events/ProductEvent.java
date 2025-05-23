@@ -1,4 +1,4 @@
-package com.learning.storemanagement.utils;
+package com.learning.storemanagement.utils.events;
 
 public final class ProductEvent {
     public static final String GET_ALL_PRODUCTS = "get_all_products";
